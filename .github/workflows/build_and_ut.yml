@@ -1,0 +1,44 @@
+name: Build_And_UnitTest
+
+on:
+  push:
+    branches: [ dev, main, 'feat/**' ]
+  pull_request:
+    branches: [ dev, main ]
+
+jobs:
+
+  linux:    
+    name: build on ubuntu-latest
+    runs-on: ubuntu-latest
+   
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET SDK 6.0.x
+      uses: actions/setup-dotnet@v1.7.2
+      with:
+        dotnet-version: 6.0.x 
+  
+    - name: Build with dotnet      
+      run: |
+        dotnet build CoverallsDemo.sln
+
+    - name: Run tests
+      run: |
+        dotnet test MyTestProject/MyTestProject.csproj --collect:"XPlat Code Coverage"
+
+    - name: ReportGenerator
+      uses: danielpalme/ReportGenerator-GitHub-Action@5.1.5
+      with:
+        reports: "**/TestResults/coverage.cobertura.xml" 
+        targetdir: "${{ github.workspace }}/coverage" 
+        reporttypes: 'lcov'       
+
+    - name: Coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        path-to-lcov:  ${{ github.workspace }}/coverage/lcov.info
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
+
+    
