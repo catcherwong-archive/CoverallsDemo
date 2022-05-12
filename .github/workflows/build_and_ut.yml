@@ -28,12 +28,15 @@ jobs:
         dotnet test MyTestProject/MyTestProject.csproj --collect:"XPlat Code Coverage"
 
     - name: ReportGenerator
-      uses: danielpalme/ReportGenerator-GitHub-Action@5.1.5
-      with:
-        reports: "**/TestResults/coverage.cobertura.xml" 
-        targetdir: "${{ github.workspace }}/coverage" 
-        reporttypes: 'lcov'       
+      run: |
+        dotnet tool install -g dotnet-reportgenerator-globaltool
 
+        reportgenerator -reports:"${{ github.workspace }}/MyTestProject/TestResults/**/coverage.cobertura.xml" \
+            -targetdir:"${{ github.workspace }}/coverage" \
+            -reporttypes:lcov
+
+        ls ${{ github.workspace }}/coverage    
+      
     - name: Coveralls
       uses: coverallsapp/github-action@master
       with:
