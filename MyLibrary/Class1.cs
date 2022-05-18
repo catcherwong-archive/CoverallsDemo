@@ -22,6 +22,7 @@
         public static void Test(this string str)
         {
             System.Console.WriteLine("123");
+            System.Console.WriteLine("456");
         }
     }
 }

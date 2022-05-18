@@ -34,14 +34,24 @@ jobs:
         reportgenerator -reports:"${{ github.workspace }}/MyTestProject/TestResults/**/coverage.cobertura.xml" \
             -targetdir:"${{ github.workspace }}/coverage" \
             -reporttypes:lcov
+        
+        cp ${{ github.workspace }}/MyTestProject/TestResults/*/coverage.cobertura.xml  ${{ github.workspace }}/coverage   
 
         ls ${{ github.workspace }}/coverage    
       
-    - name: Coveralls
-      uses: coverallsapp/github-action@master
-      with:
-        path-to-lcov:  ${{ github.workspace }}/coverage/lcov.info
-        github-token: ${{ secrets.GITHUB_TOKEN }}
+    # - name: Coveralls
+    #   uses: coverallsapp/github-action@master
+    #   with:
+    #     path-to-lcov:  ${{ github.workspace }}/coverage/lcov.info
+    #     github-token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v2
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        fail_ci_if_error: true
+        files: ${{ github.workspace }}/coverage/coverage.cobertura.xml       
+        name: codecov-umbrella
+        verbose: true
 
     
