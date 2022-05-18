@@ -34,5 +34,13 @@ namespace MyTestProject
             Assert.False(flag);
             Assert.Equal("invalid", msg);
         }
+
+        [Fact]
+        public void Test()
+        {
+            "abc".Test();
+
+            Assert.False(false);
+        }
     }
 }
